@@ -1,0 +1,38 @@
+# BoCare backend + Jaeger (trace viewer).
+#
+#   docker compose up --build        API on http://localhost:8000, traces on http://localhost:16686
+#
+# Ollama runs on the host and keeps using its GPU directly; pull the models there first
+# (see SETUP.md). Build the vector index on the host too (scripts/build_index.py): it is mounted.
+
+services:
+  backend:
+    build: .
+    image: bocare-backend:2.0
+    ports:
+      - "8000:8000"
+    environment:
+      OLLAMA_URL: http://host.docker.internal:11434
+      TRACING_EXPORTER: otlp
+      TRACING_OTLP_ENDPOINT: http://jaeger:4318/v1/traces
+    env_file:
+      - path: .env          # optional machine-specific overrides and secrets
+        required: false
+    volumes:
+      - ./backend/data/index:/app/backend/data/index:ro   # built on the host
+      - bocare-state:/app/backend/data/state               # sessions survive container restarts
+    extra_hosts:
+      - "host.docker.internal:host-gateway"                # needed on Linux; built in on Docker Desktop
+    depends_on:
+      - jaeger
+    restart: unless-stopped
+
+  jaeger:
+    image: jaegertracing/jaeger:2.22.0
+    ports:
+      - "16686:16686"   # web UI
+      - "4318:4318"     # OTLP over HTTP, also reachable from a backend running on the host
+    restart: unless-stopped
+
+volumes:
+  bocare-state:

@@ -1,0 +1,13 @@
+# Backend runtime: what the Docker image installs. Exact versions so every build is identical;
+# upgrade deliberately, then rerun the tests and the retrieval evaluation.
+fastapi==0.143.0
+uvicorn==0.54.0
+pydantic==2.14.0
+pydantic-settings==2.15.0
+PyYAML==6.0.3
+requests==2.34.2
+beautifulsoup4==4.15.0
+langdetect==1.0.9
+numpy==2.4.6
+opentelemetry-sdk==1.45.1
+opentelemetry-exporter-otlp-proto-http==1.45.1

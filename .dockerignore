@@ -1,0 +1,17 @@
+# Only backend/app, backend/data/processed and requirements/ are needed in the image.
+.git
+.venv
+**/__pycache__
+**/*.pyc
+.ruff_cache
+.pytest_cache
+.env
+backend/data/raw
+backend/data/index
+backend/data/state
+backend/tests
+desktop
+evaluation
+scripts
+assets
+*.md

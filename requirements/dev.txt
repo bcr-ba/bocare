@@ -1,0 +1,8 @@
+# Everything for local development and CI: backend + desktop + tests and tools.
+-r backend.txt
+-r desktop.txt
+pytest==9.1.1
+httpx==0.28.1
+ruff==0.17.0
+# Only for the CPU embedding provider and the MiniLM comparison in evaluation/retrieval.
+fastembed==0.9.0
