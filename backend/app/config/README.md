@@ -8,7 +8,7 @@ After editing a file, restart the server and run `pytest`.
 
 | File | Controls | Read by |
 |---|---|---|
-| `settings.yml` | Model, timeouts, judge, retrieval, rate limit, default language, log level | `core/settings.py` |
+| `settings.yml` | Models, timeouts, judge, corpus and index, embedding model, session storage and retention, tracing, rate limit, log level | `core/settings.py` |
 | `triage.yml` | Red flags (level 5), symptom profiles, urgency keywords, logging threshold | `pipeline/triage.py` |
 | `care_paths.yml` | Advice and timeframe for each level, specialists | `pipeline/triage.py` |
 | `follow_up_questions.yml` | Follow-up questions and when to stop asking | `pipeline/follow_up.py` |

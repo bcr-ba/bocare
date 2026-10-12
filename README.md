@@ -20,8 +20,11 @@ BoCare 2.0 is a rebuild of a prototype I wrote in 2025 (BoCare 1.0). I took my o
 | **Sources** | HTML scraping of Mayo Clinic, NHS and MedlinePlus (later blocked: 403/404), plus an Ameli "source" whose text was a hard-coded placeholder | Semantic search over the full MedlinePlus corpus (1,016 topics, 3,524 chunks) with a multilingual embedding model; French questions find English pages. Measured on 38 patient messages: 79% of the right pages retrieved, vs 39% for keyword search. Citations that match no source are removed. |
 | **Output handling** | Free text, plus a regex "hallucination fix" that could reverse meaning ("I cannot provide…" became "The information suggests") | JSON matching a schema, with each explanation citing source IDs. It's checked before display: no delay advice at level 4-5, no doses, no diagnostic certainty, plus an LLM judge from level 3. One regeneration, then the fixed recommendation. |
 | **Configuration** | Values scattered through the code; the API key had to be pasted into `config.py` | Every rule, threshold, text and prompt in validated YAML files; a broken file stops the server at startup with the file and field named |
+| **Observability** | `print` statements and a log file | OpenTelemetry traces, one per message, with a span per stage (triage, retrieval, generation, verification) and token counts; viewable in Jaeger. Spans never contain patient text, and a test enforces it. |
+| **State** | In memory, lost on restart | SQLite behind a `SessionStore` interface, versioned schema, sessions deleted after 7 days without activity |
+| **Delivery** | Run from the IDE | Docker image (343 MB) and docker-compose (backend + Jaeger); GitHub Actions runs lint, tests, an image smoke test and a secret scan on every push |
 | **Privacy** | Raw symptom text written to a log file | Logs hold the triage outcome and a request ID, never the message text |
-| **Tests** | None | 153 automated tests (unit, safety, API integration, UI), running offline with a mocked LLM and retriever |
+| **Tests** | None | 185 automated tests (unit, safety, API integration, UI), running offline with a mocked LLM and retriever |
 | **Latency** | One blocking call; nothing on screen for 20-40 s | Staged streaming: triage and recommendation in under 0.5 s, then sources, progress updates and the verified answer |
 | **Interface** | Whole reply in one coloured bubble; text clipped on long messages | Structured card (safety banner, triage panel, explanations with clickable citations, warning signs, follow-ups, sources); connection and urgency status in the header |
 
@@ -56,7 +59,8 @@ These are the choices I'd defend in a review:
 backend/
   app/
     api/            routes: /chat, /chat/stream, /health
-    core/           settings, config_loader (YAML loading + validation), logging, request IDs, errors
+    core/           settings, config_loader (YAML loading + validation), logging, request IDs,
+                    OpenTelemetry tracing, errors
     config/         YAML: settings, triage rules, care paths, follow-up questions, safety,
                     verification patterns, conversation texts, search glossary
     prompts/        YAML: answer and judge prompts, separated from the code that sends them
@@ -64,6 +68,7 @@ backend/
     pipeline/       orchestrator, preprocessor, safety, triage, follow-ups, responder,
                     verifier, postprocessor
     llm/            Ollama and OpenRouter clients, prompt builders
+    state/          SessionStore: in-memory and SQLite implementations, migrations, retention
     retrieval/      corpus parsing and chunking, embeddings, vector index, semantic retriever;
                     MedlinePlus keyword retriever (fallback)
   data/             processed/chunks.jsonl (versioned); raw/ and index/ are rebuilt by scripts/
@@ -78,6 +83,8 @@ desktop/
   config/           YAML: settings, FR/EN texts, colours; Qt stylesheet
   tests/            offscreen UI tests
 assets/             logo, screenshot
+requirements/       backend.txt (pinned, used by the image), desktop.txt, dev.txt
+Dockerfile, docker-compose.yml, .github/workflows/ci.yml
 ```
 
 Each part has its own README: [backend](backend/README.md), [configuration](backend/app/config/README.md), [desktop](desktop/README.md). Installation and troubleshooting are in [SETUP.md](SETUP.md).
@@ -123,7 +130,8 @@ ollama pull qwen3:8b && ollama pull qwen3:4b && ollama pull qwen3-embedding:0.6b
 python scripts/build_corpus.py --download && python scripts/build_index.py
 uvicorn app.main:app --app-dir backend     # backend on http://127.0.0.1:8000
 python -m desktop.main                      # desktop client, in a second terminal
-pytest                                      # 153 tests, no network or GPU needed
+pytest                                      # 185 tests, no network or GPU needed
+docker compose up --build                   # or: backend + Jaeger in Docker (traces on :16686)
 ```
 
 ## Limitations
@@ -131,14 +139,14 @@ pytest                                      # 153 tests, no network or GPU neede
 - **Triage is keyword-based and not clinically validated.** It misses symptoms described in unexpected words and can over-react to words like "persistent".
 - **Retrieval is weaker in French** (61% vs 95% in English on our evaluation set) and has no relevance threshold yet, so a loosely related page ("Throat Cancer" for a scratchy throat) can be sent as a source. Hybrid search, a reranker and query translation are next.
 - **Emergency numbers are French** (15, 112, 3114). Deploying elsewhere means changing them in `care_paths.yml` and `safety.yml`.
-- **Sessions and rate limits live in memory**, so they are lost on restart and limited to one process.
+- **One process only.** Sessions are in SQLite and rate limits in memory; running several workers would need Postgres and Redis.
 - **Verified answers take 15-30 s** with qwen3:8b on an 8 GB laptop GPU (JSON generation plus, from level 3, the judge). The triage itself appears in under 0.5 s.
 
 ## Roadmap
 
 1. Hybrid search (BM25 + embeddings), a cross-encoder reranker, a relevance threshold and query translation, measured against the same evaluation set.
 2. Build an evaluation set of labelled triage cases and track the under-triage rate in CI.
-3. Add Docker, persistent sessions and Arabic.
+3. Arabic, and Postgres for multi-process deployments.
 
 ---
 

@@ -13,6 +13,7 @@ FastAPI service that turns a patient's message into an urgency level, a recommen
 | `app/schemas/` | Pydantic contracts: API requests and responses (`api.py`), the model's answer and the judge's verdict (`llm.py`), every config file (`config.py`) |
 | `app/pipeline/` | The steps a message goes through (below) |
 | `app/llm/` | Ollama and OpenRouter clients; prompt builders |
+| `app/state/` | `SessionStore` interface; in-memory and SQLite implementations with migrations and retention |
 | `app/retrieval/` | Corpus parsing and chunking, embeddings (Ollama or fastembed), vector index, semantic retriever; the MedlinePlus keyword retriever is the fallback |
 | `tests/` | `unit/`, `safety/` (behavioural safety checks), `integration/` (API and streaming with fakes) |
 
@@ -38,7 +39,8 @@ FastAPI service that turns a patient's message into an urgency level, a recommen
 
 - **The model never decides the urgency.** It is told the level and must stay consistent with it.
 - **Nothing generated reaches the patient unchecked.** Failure codes are logged and returned in `verification.failed_checks`; the generated text is never logged.
-- **Health data stays out of the logs.** Logs hold session IDs, levels, matched symptom names and failure codes, never the message.
+- **One trace per message.** `core/tracing.py` opens a `chat.turn` span with children for each stage; streaming keeps them in one trace although its steps run on different threads.
+- **Health data stays out of the logs and traces.** Logs hold session IDs, levels, matched symptom names and failure codes, never the message.
 - **No behaviour hard-coded in Python.** Rules, thresholds, texts and prompts are in `config/` and `prompts/`, validated at startup.
 
 ## Extending

@@ -11,3 +11,5 @@ bocare_session_*.json
 backend/data/raw/
 # Rebuilt by scripts/build_index.py (binary, model-specific)
 backend/data/index/
+# Sessions database: contains patient text, never commit it
+backend/data/state/

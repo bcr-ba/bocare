@@ -68,15 +68,46 @@ python -m desktop.main
 
 To point it at another server, set `BOCARE_API_URL` (for example `http://192.168.1.20:8000`).
 
+## 4b. Run with Docker (backend + trace viewer)
+
+Ollama stays on your machine (it uses the GPU directly); the models must be pulled and the index built
+on the host first (steps 2 and 2b).
+
+```bash
+docker compose up --build -d     # backend on http://localhost:8000, Jaeger on http://localhost:16686
+docker compose logs -f backend   # follow the logs
+docker compose down              # stop (sessions are kept in the bocare-state volume)
+```
+
+The desktop client works unchanged against the containerised backend.
+
+## Traces
+
+Every message produces a trace: one span per stage with its duration, the urgency level, the number of
+sources, token counts and verification results. Spans never contain the patient's text.
+
+- In Docker, traces go to Jaeger automatically: open http://localhost:16686, pick the service
+  `bocare-backend`, then **Find Traces**.
+- Running the backend directly on your machine: set `TRACING_EXPORTER=otlp` (Jaeger must run:
+  `docker compose up -d jaeger`) or `TRACING_EXPORTER=console` to print spans in the terminal.
+
+## Sessions
+
+Sessions are stored in `backend/data/state/bocare.db` (SQLite; in Docker, the `bocare-state` volume) and
+deleted after `session_retention_days` (7) without activity. They contain the patient's messages: the file
+is gitignored and must never be shared. `STATE_BACKEND=memory` keeps nothing on disk.
+
 ## 5. Test and lint
 
 ```bash
-pytest                              # all 153 tests; no network, GPU or model needed
+pytest                              # all 185 tests; no network, GPU or model needed
 pytest backend/tests/safety -v      # only the behavioural safety checks
 ruff check backend desktop
 ```
 
-Tests replace the model and MedlinePlus with fakes, so they run anywhere in about a second. The desktop tests run Qt offscreen.
+Tests replace the models with fakes, so they run anywhere in about a second; the desktop tests run Qt offscreen.
+GitHub Actions runs the same checks on every push, plus a Docker build with a smoke test and a secret scan
+(`.github/workflows/ci.yml`).
 
 ## Common problems
 
@@ -89,4 +120,6 @@ Tests replace the model and MedlinePlus with fakes, so they run anywhere in abou
 | No sources shown | The index isn't built (the log says "Falling back") or the embedding model isn't pulled. |
 | Every Ollama call takes 2 s more than it should | `OLLAMA_URL` uses `localhost`: on Windows it tries IPv6 first. Use `127.0.0.1`. |
 | Port 8000 already in use | An old server is still running; stop it before starting a new one, or you'll be testing old code. |
+| `docker compose up` fails: port 8000 already allocated | A backend started outside Docker is still running; stop it first. Check *what* holds the port before stopping it: it can be Docker itself. |
+| No traces in Jaeger | `TRACING_EXPORTER` isn't `otlp`, or Jaeger isn't running (`docker compose ps`). |
 | Desktop shows "Server offline" | The backend isn't running, or `BOCARE_API_URL` points elsewhere. |
