@@ -6,7 +6,7 @@ from app.pipeline.responder import Responder
 
 def test_new_session_gets_an_id_and_the_requested_language(orchestrator):
     result = orchestrator.handle("", language="en")  # blocked, but the session still exists
-    assert result.session_id in orchestrator.sessions
+    assert orchestrator.get_session(result.session_id) is not None
     assert orchestrator.get_session(result.session_id).language == "en"
 
 

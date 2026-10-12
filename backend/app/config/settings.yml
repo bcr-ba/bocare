@@ -59,6 +59,19 @@ dense_candidates: 40            # chunks scored before keeping the best chunk pe
 # --- Conversation ------------------------------------------------------------------------------
 default_language: fr            # language of a new session until the user writes in another one
 
+# --- State --------------------------------------------------------------------------------
+state_backend: sqlite           # "sqlite" (survives restarts) or "memory" (lost on restart)
+state_db_file: backend/data/state/bocare.db
+# Sessions contain patient text (health data): delete them after this many days without activity.
+session_retention_days: 7
+
+# --- Tracing (OpenTelemetry) ----------------------------------------------------------------
+# "none", "console" (prints spans to the terminal) or "otlp" (sends them to Jaeger or another
+# collector; docker-compose.yml sets this). Spans never contain patient text.
+tracing_exporter: none
+tracing_otlp_endpoint: http://127.0.0.1:4318/v1/traces
+tracing_service_name: bocare-backend
+
 # --- API ---------------------------------------------------------------------------------------
 rate_limit_per_minute: 10
 log_level: INFO

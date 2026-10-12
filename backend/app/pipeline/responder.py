@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from typing import Dict, Iterator, List, Optional, Sequence, Union
 
 from app.core.settings import get_settings
+from app.core.tracing import set_attributes, span
 from app.llm.client import LLMClient, LLMError
 from app.llm.prompts import build_messages
 from app.pipeline.postprocessor import clean_answer, parse_answer
@@ -35,7 +36,10 @@ class Responder:
         return getattr(self.llm, "configured", True)
 
     def retrieve(self, text: str) -> List[Source]:
-        return self.retriever.search(text)
+        with span("retrieval.search", **{"retrieval.retriever": type(self.retriever).__name__}) as current:
+            sources = self.retriever.search(text)
+            current.set_attribute("retrieval.sources", len(sources))
+            return sources
 
     def respond(self, text: str, history: Sequence[Dict[str, str]], language: str, urgency_level: int,
                 advice: str, sources: Optional[List[Source]] = None) -> ResponderOutput:
@@ -55,7 +59,8 @@ class Responder:
             yield "generating" if attempt == 0 else "regenerating"
             messages = build_messages(text, history, sources, language, urgency_level, advice, rejected_for)
             try:
-                raw = self.llm.complete(messages, schema=ANSWER_SCHEMA)
+                with span("answer.generate", **{"answer.attempt": attempt + 1}):
+                    raw = self.llm.complete(messages, schema=ANSWER_SCHEMA)
             except LLMError as exc:
                 logger.error("LLM call failed: %s", exc)
                 yield ResponderOutput(None, sources, "llm_unavailable", failed)
@@ -66,7 +71,9 @@ class Responder:
                 logger.info("Model ignored the JSON schema; using its text as the summary")
             answer = clean_answer(answer, len(sources))
             yield "verifying"
-            failures = self.verifier.check(answer, urgency_level, advice, sources)
+            with span("answer.verify", **{"answer.attempt": attempt + 1, "answer.structured": structured}) as check:
+                failures = self.verifier.check(answer, urgency_level, advice, sources)
+                set_attributes(check, **{"verify.failures": failures})
             if not failures:
                 yield ResponderOutput(answer, sources, "passed" if attempt == 0 else "regenerated", failed)
                 return

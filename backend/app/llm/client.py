@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional, Protocol
 import requests
 
 from app.core.settings import get_settings
+from app.core.tracing import set_attributes, span
 
 logger = logging.getLogger(__name__)
 
@@ -126,14 +127,26 @@ class OllamaClient:
         }
         if schema:
             payload["format"] = schema  # Ollama constrains decoding to this JSON schema
-        try:
-            response = requests.post(f"{self.url}/api/chat", json=payload, timeout=self.timeout)
-            response.raise_for_status()
-            content = response.json()["message"]["content"]
-        except requests.RequestException as exc:
-            raise LLMError(f"request failed: {exc}") from exc
-        except (KeyError, ValueError) as exc:
-            raise LLMError(f"unexpected response: {exc}") from exc
-        if not content.strip():
-            raise LLMError("empty reply")
-        return content
+        with span("llm.chat", **{"gen_ai.system": "ollama", "gen_ai.request.model": model,
+                                   "gen_ai.request.temperature": options["temperature"],
+                                   "llm.structured_output": bool(schema)}) as current:
+            try:
+                response = requests.post(f"{self.url}/api/chat", json=payload, timeout=self.timeout)
+                response.raise_for_status()
+                data = response.json()
+                content = data["message"]["content"]
+            except requests.RequestException as exc:
+                raise LLMError(f"request failed: {exc}") from exc
+            except (KeyError, ValueError) as exc:
+                raise LLMError(f"unexpected response: {exc}") from exc
+            ms = 1e-6  # Ollama reports durations in nanoseconds
+            set_attributes(current, **{
+                "gen_ai.usage.input_tokens": data.get("prompt_eval_count"),
+                "gen_ai.usage.output_tokens": data.get("eval_count"),
+                "ollama.load_ms": round(data.get("load_duration", 0) * ms),
+                "ollama.prompt_eval_ms": round(data.get("prompt_eval_duration", 0) * ms),
+                "ollama.eval_ms": round(data.get("eval_duration", 0) * ms),
+            })
+            if not content.strip():
+                raise LLMError("empty reply")
+            return content

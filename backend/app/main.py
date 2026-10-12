@@ -12,6 +12,7 @@ from app.core.errors import register_error_handlers
 from app.core.logging import configure_logging
 from app.core.logging_context import request_id_middleware
 from app.core.settings import ROOT_DIR, Settings, get_settings
+from app.core.tracing import configure_tracing
 from app.llm.client import LLMClient, OllamaClient, OpenRouterClient
 from app.pipeline.orchestrator import Orchestrator
 from app.pipeline.responder import Responder
@@ -22,6 +23,7 @@ from app.retrieval.dense import DenseRetriever
 from app.retrieval.embeddings import build_embedder
 from app.retrieval.medlineplus import MedlinePlusRetriever
 from app.retrieval.vector_index import VectorIndex, VectorIndexError
+from app.state.session_store import InMemorySessionStore, SessionStore, SqliteSessionStore
 
 logger = logging.getLogger(__name__)
 
@@ -44,12 +46,22 @@ def build_retriever(settings: Settings) -> Retriever:
     return MedlinePlusRetriever(settings)
 
 
+def build_session_store(settings: Settings) -> SessionStore:
+    if settings.state_backend == "sqlite":
+        store = SqliteSessionStore(ROOT_DIR / settings.state_db_file, settings.session_retention_days)
+        deleted = store.delete_expired()
+        logger.info("Session store: %s (schema v%d), %d expired session(s) deleted",
+                    settings.state_db_file, store.schema_version, deleted)
+        return store
+    return InMemorySessionStore(settings.session_retention_days)
+
+
 def build_orchestrator(settings: Settings) -> Orchestrator:
     llm = build_llm(settings)
     verifier = Verifier(judge=llm if settings.judge_enabled else None, judge_min_level=settings.judge_min_level)
     responder = Responder(build_retriever(settings), llm, verifier, max_attempts=settings.llm_max_attempts)
     validator = InputValidator(RateLimiter(settings.rate_limit_per_minute))
-    return Orchestrator(responder, validator)
+    return Orchestrator(responder, validator, store=build_session_store(settings))
 
 
 @asynccontextmanager
@@ -66,6 +78,7 @@ async def lifespan(app: FastAPI):
 def create_app(orchestrator: Optional[Orchestrator] = None) -> FastAPI:
     settings = get_settings()
     configure_logging(settings.log_level)
+    configure_tracing(settings)
     config_loader.validate_all()  # a broken YAML file stops the server here, with the file named
 
     app = FastAPI(title="BoCare API", version="0.1.0", lifespan=lifespan)

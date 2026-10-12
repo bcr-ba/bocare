@@ -1,9 +1,13 @@
+import os
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional
 
 import pytest
 
+# Before any app code loads: tests must never write a sessions database or send traces.
+os.environ["STATE_BACKEND"] = "memory"
+os.environ["TRACING_EXPORTER"] = "none"
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app.llm.client import LLMError  # noqa: E402

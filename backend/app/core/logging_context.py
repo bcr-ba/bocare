@@ -2,6 +2,8 @@
 import contextvars
 import logging
 import uuid
+from contextlib import contextmanager
+from typing import Iterator
 
 from fastapi import Request
 
@@ -10,6 +12,17 @@ _request_id: contextvars.ContextVar[str] = contextvars.ContextVar("request_id", 
 
 def get_request_id() -> str:
     return _request_id.get()
+
+
+@contextmanager
+def bind_request_id(request_id: str) -> Iterator[None]:
+    """Attach a request ID to the logs of code running outside the request's own context
+    (e.g. a streamed response, produced after the middleware has returned)."""
+    token = _request_id.set(request_id)
+    try:
+        yield
+    finally:
+        _request_id.reset(token)
 
 
 class RequestIdFilter(logging.Filter):

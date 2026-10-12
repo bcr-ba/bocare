@@ -2,6 +2,8 @@
 import logging
 from typing import List, Optional
 
+from opentelemetry import trace
+
 from app.core.settings import Settings, get_settings
 from app.retrieval.base import Source
 from app.retrieval.embeddings import Embedder, EmbeddingError
@@ -36,7 +38,10 @@ class DenseRetriever:
         # sources cover different pages.
         sources: List[Source] = []
         seen_topics = set()
-        for chunk, _score in self.index.search(query_vector, self.settings.dense_candidates):
+        results = self.index.search(query_vector, self.settings.dense_candidates)
+        if results:
+            trace.get_current_span().set_attribute("retrieval.top_score", round(results[0][1], 4))
+        for chunk, _score in results:
             if chunk.topic_id in seen_topics:
                 continue
             seen_topics.add(chunk.topic_id)

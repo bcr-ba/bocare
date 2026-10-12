@@ -1,14 +1,16 @@
 """Message flow: language detection, validation, triage, retrieval + LLM, follow-ups."""
 import logging
-import threading
-import uuid
-from dataclasses import asdict, dataclass, field
-from datetime import datetime
-from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
+from contextlib import contextmanager
+from dataclasses import dataclass, field
+from typing import Any, Iterator, List, Optional, Tuple, Union
+
+from opentelemetry.trace import StatusCode
 
 from app.core import config_loader
+from app.core.logging_context import bind_request_id, get_request_id
 from app.core.settings import get_settings
-from app.pipeline.follow_up import QuestionId, next_follow_up_questions, question_text
+from app.core.tracing import set_attributes, span, start_root, within
+from app.pipeline.follow_up import next_follow_up_questions, question_text
 from app.pipeline.postprocessor import render_markdown
 from app.pipeline.preprocessor import detect_language, small_talk_kind
 from app.pipeline.responder import Responder, ResponderOutput
@@ -16,6 +18,7 @@ from app.pipeline.safety import InputValidator
 from app.pipeline.triage import assess, care_recommendation
 from app.retrieval.base import Source
 from app.schemas.llm import StructuredAnswer
+from app.state.session_store import InMemorySessionStore, Session, SessionStore
 
 logger = logging.getLogger(__name__)
 
@@ -24,18 +27,17 @@ def texts():
     return config_loader.conversation()
 
 
-@dataclass
-class Session:
-    session_id: str
-    language: str = "fr"
-    urgency_level: int = 1
-    symptoms: List[str] = field(default_factory=list)
-    history: List[Dict[str, str]] = field(default_factory=list)
-    asked_questions: List[QuestionId] = field(default_factory=list)
-    started_at: datetime = field(default_factory=datetime.now)
-
-    def to_dict(self) -> dict:
-        return asdict(self)
+def _record_result(root, result: "ChatResult") -> None:
+    """Outcome of the turn on its root span: codes and counts only, never text."""
+    set_attributes(root, **{
+        "bocare.language": result.language,
+        "bocare.urgency_level": result.urgency_level,
+        "bocare.safety_status": result.safety_status,
+        "bocare.safety_flags": [f for f in result.safety_flags if f],
+        "bocare.verification": result.verification,
+        "bocare.failed_checks": result.failed_checks,
+        "bocare.sources": len(result.sources),
+    })
 
 
 @dataclass
@@ -70,39 +72,57 @@ class Turn:
 
 class Orchestrator:
     def __init__(self, responder: Responder, validator: Optional[InputValidator] = None,
-                 default_language: Optional[str] = None):
+                 default_language: Optional[str] = None, store: Optional[SessionStore] = None):
         self.responder = responder
         self.validator = validator or InputValidator()
         self.default_language = default_language or get_settings().default_language
-        self.sessions: Dict[str, Session] = {}
-        self._lock = threading.Lock()
+        self.store = store or InMemorySessionStore()
 
     @property
     def llm_configured(self) -> bool:
         return self.responder.llm_configured
 
     def get_session(self, session_id: str) -> Optional[Session]:
-        return self.sessions.get(session_id)
+        return self.store.get(session_id) if session_id else None
 
     def _get_or_create_session(self, session_id: Optional[str], language: Optional[str]) -> Session:
-        with self._lock:
-            if session_id in self.sessions:
-                return self.sessions[session_id]
-            session = Session(session_id=str(uuid.uuid4()), language=language or self.default_language)
-            self.sessions[session.session_id] = session
-        logger.info("Session %s started (%s)", session.session_id, session.language)
+        session = self.get_session(session_id)
+        if session is None:
+            session = self.store.create(language or self.default_language)
+            logger.info("Session %s started (%s)", session.session_id, session.language)
         return session
 
-    def handle(self, message: str, session_id: Optional[str] = None, language: Optional[str] = None) -> ChatResult:
+    def handle(self, message: str, session_id: Optional[str] = None, language: Optional[str] = None,
+               request_id: Optional[str] = None) -> ChatResult:
         """Process one user message. `language` only sets the language of a new session;
         after that it follows the language the user writes in."""
-        session = self._get_or_create_session(session_id, language)
+        request_id = request_id or get_request_id()
+        root = start_root("chat.turn", **{"bocare.request_id": request_id, "bocare.endpoint": "chat"})
         try:
-            step = self.prepare(message, session)
-            return step if isinstance(step, ChatResult) else self.complete(step)
-        except Exception:
-            logger.exception("Session %s: unexpected error", session.session_id)
-            return self._internal_error(session)
+            with self._step(root, request_id):
+                session = self._get_or_create_session(session_id, language)
+                root.set_attribute("bocare.session_id", session.session_id)
+                try:
+                    step = self.prepare(message, session)
+                    result = step if isinstance(step, ChatResult) else self.complete(step)
+                except Exception as exc:
+                    root.record_exception(exc)
+                    root.set_status(StatusCode.ERROR)
+                    logger.exception("Session %s: unexpected error", session.session_id)
+                    result = self._internal_error(session)
+                self.store.save(session)
+            _record_result(root, result)
+            return result
+        finally:
+            root.end()
+
+    @staticmethod
+    @contextmanager
+    def _step(root, request_id: str):
+        """One synchronous step of a turn: its spans attach to the turn's root span and its logs carry
+        the request ID, even when streaming runs each step on a different thread."""
+        with within(root), bind_request_id(request_id):
+            yield
 
     def _internal_error(self, session: Session) -> ChatResult:
         return ChatResult(session.session_id, session.language, texts().internal_error[session.language],
@@ -114,7 +134,10 @@ class Orchestrator:
         session.language = detect_language(message, session.language)
         language = session.language
 
-        validation = self.validator.validate(message, session.session_id, language)
+        with span("safety.validate") as check:
+            validation = self.validator.validate(message, session.session_id, language)
+            set_attributes(check, **{"safety.valid": validation.is_valid, "safety.reason": validation.reason,
+                                     "safety.flags": validation.flags})
         if not validation.is_valid:
             return ChatResult(session.session_id, language, validation.error, session.urgency_level,
                               safety_status="blocked", safety_flags=[validation.reason],
@@ -125,7 +148,9 @@ class Orchestrator:
             return ChatResult(session.session_id, language, texts().small_talk[small_talk].reply[language],
                               session.urgency_level)
 
-        triage = assess(validation.text, validation.self_harm)
+        with span("triage.assess") as triage_span:
+            triage = assess(validation.text, validation.self_harm)
+            set_attributes(triage_span, **{"triage.urgency": triage.urgency, "triage.symptoms": triage.symptoms})
         session.symptoms.extend(s for s in triage.symptoms if s not in session.symptoms)
         session.urgency_level = max(session.urgency_level, triage.urgency)
         if triage.urgency >= config_loader.triage().log_from_level:
@@ -171,32 +196,56 @@ class Orchestrator:
                                         turn.recommendation[0])
         return self.finish(turn, output)
 
-    def stream(self, message: str, session_id: Optional[str] = None,
-               language: Optional[str] = None) -> Iterator[Tuple[str, Any]]:
+    def stream(self, message: str, session_id: Optional[str] = None, language: Optional[str] = None,
+               request_id: Optional[str] = None) -> Iterator[Tuple[str, Any]]:
         """Same pipeline as handle(), as events: ("triage", ChatResult) as soon as triage is done,
         ("sources", [Source]), ("status", stage name), and finally ("done", ChatResult).
         The answer is only sent once it has passed verification."""
-        session = self._get_or_create_session(session_id, language)
+        request_id = request_id or get_request_id()
+        root = start_root("chat.turn", **{"bocare.request_id": request_id, "bocare.endpoint": "chat/stream"})
+        # Every `with self._step(...)` block below is free of `yield`: a span or context must not stay
+        # open across events, because the next event may be produced on another thread.
         try:
-            step = self.prepare(message, session)
-            if isinstance(step, ChatResult):
-                yield "done", step
-                return
-            yield "triage", self.preview(step)
-            yield "status", "retrieving"
-            sources = self.responder.retrieve(step.text)
-            yield "sources", sources
-            output = None
-            for event in self.responder.respond_steps(step.text, session.history, session.language,
-                                                      session.urgency_level, step.recommendation[0], sources):
-                if isinstance(event, str):
-                    yield "status", event
-                else:
-                    output = event
-            yield "done", self.finish(step, output)
-        except Exception:
-            logger.exception("Session %s: unexpected error", session.session_id)
-            yield "done", self._internal_error(session)
+            with self._step(root, request_id):
+                session = self._get_or_create_session(session_id, language)
+                root.set_attribute("bocare.session_id", session.session_id)
+            try:
+                with self._step(root, request_id):
+                    step = self.prepare(message, session)
+                    if isinstance(step, ChatResult):
+                        self.store.save(session)
+                if isinstance(step, ChatResult):
+                    _record_result(root, step)
+                    yield "done", step
+                    return
+                yield "triage", self.preview(step)
+                yield "status", "retrieving"
+                with self._step(root, request_id):
+                    sources = self.responder.retrieve(step.text)
+                yield "sources", sources
+                steps = self.responder.respond_steps(step.text, session.history, session.language,
+                                                     session.urgency_level, step.recommendation[0], sources)
+                output = None
+                while output is None:
+                    with self._step(root, request_id):
+                        event = next(steps)
+                    if isinstance(event, str):
+                        yield "status", event
+                    else:
+                        output = event
+                with self._step(root, request_id):
+                    result = self.finish(step, output)
+                    self.store.save(session)
+                _record_result(root, result)
+                yield "done", result
+            except Exception as exc:
+                root.record_exception(exc)
+                root.set_status(StatusCode.ERROR)
+                with self._step(root, request_id):
+                    logger.exception("Session %s: unexpected error", session.session_id)
+                yield "done", self._internal_error(session)
+        finally:
+            root.end()
 
     def finish(self, turn: Turn, output: ResponderOutput) -> ChatResult:
         session, language = turn.session, turn.session.language

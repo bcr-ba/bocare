@@ -73,6 +73,16 @@ class Settings(BaseSettings):
     # Conversation
     default_language: Literal["fr", "en"]
 
+    # State
+    state_backend: Literal["sqlite", "memory"]
+    state_db_file: Path
+    session_retention_days: float
+
+    # Tracing
+    tracing_exporter: Literal["none", "console", "otlp"]
+    tracing_otlp_endpoint: str
+    tracing_service_name: str
+
     # API
     rate_limit_per_minute: int
     log_level: str

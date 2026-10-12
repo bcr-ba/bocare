@@ -8,6 +8,7 @@ import numpy as np
 import requests
 
 from app.core.settings import Settings, get_settings
+from app.core.tracing import span
 
 
 class EmbeddingError(Exception):
@@ -46,6 +47,10 @@ class OllamaEmbedder:
         self.num_ctx = s.embedding_num_ctx
 
     def _embed(self, texts: List[str]) -> np.ndarray:
+        with span("embedding", **{"gen_ai.request.model": self.model_name, "embedding.inputs": len(texts)}):
+            return self._post(texts)
+
+    def _post(self, texts: List[str]) -> np.ndarray:
         try:
             response = requests.post(self.url, timeout=self.timeout, json={
                 "model": self.model_name, "input": texts, "keep_alive": self.keep_alive,
