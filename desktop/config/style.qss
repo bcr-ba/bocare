@@ -1,0 +1,87 @@
+/* Qt stylesheet. Words prefixed with a dollar sign are colour names from theme.yml. */
+QMainWindow, #Root, #ChatContent { background: $bg; }
+QWidget { color: $text; font-family: "Segoe UI"; font-size: 10.5pt; }
+QLabel { background: transparent; }
+QToolTip { background: $surface_2; color: $text; border: 1px solid $border; padding: 4px; }
+
+QMenuBar { background: $surface; color: $muted; border-bottom: 1px solid $border; }
+QMenuBar::item { padding: 4px 10px; background: transparent; }
+QMenuBar::item:selected { background: $surface_2; color: $text; }
+QMenu { background: $surface; border: 1px solid $border; padding: 4px; }
+QMenu::item { padding: 6px 18px; border-radius: 4px; }
+QMenu::item:selected { background: $surface_2; }
+
+#Header { background: $surface; border-bottom: 1px solid $border; }
+#AppTitle { font-size: 15pt; font-weight: 600; }
+#AppSubtitle { color: $muted; font-size: 9.5pt; }
+
+#Pill { border: 1px solid $border; border-radius: 11px; padding: 3px 10px; color: $muted; font-size: 9pt; }
+#Pill[kind="ok"] { color: $ok; border-color: $ok_border; }
+#Pill[kind="warn"], #Pill[kind="medium"] { color: $warn; border-color: $warn_border; background: $warn_bg; }
+#Pill[kind="error"], #Pill[kind="high"] { color: $danger; border-color: $danger_border; background: $danger_bg; }
+#Pill[kind="low"] { color: $ok; border-color: $ok_border; background: $ok_bg; }
+
+#SegmentButton {
+    background: transparent; border: 1px solid $border; padding: 5px 12px; color: $muted; font-weight: 600;
+}
+#SegmentButton:hover { color: $text; }
+#SegmentButton:checked { background: $surface_2; color: $accent_hover; border-color: $accent; }
+#SegmentButton[position="left"] { border-top-left-radius: 6px; border-bottom-left-radius: 6px; border-right: none; }
+#SegmentButton[position="right"] { border-top-right-radius: 6px; border-bottom-right-radius: 6px; }
+
+#SecondaryButton { background: $surface_2; border: 1px solid $border; border-radius: 6px; padding: 6px 14px; }
+#SecondaryButton:hover { border-color: $accent; }
+#PrimaryButton {
+    background: $accent; color: $on_accent; border: none; border-radius: 8px; padding: 8px 20px; font-weight: 600;
+}
+#PrimaryButton:hover { background: $accent_hover; }
+#PrimaryButton:disabled { background: $surface_2; color: $faint; }
+
+QScrollArea#ChatView { border: none; background: $bg; }
+QScrollBar:vertical { background: transparent; width: 10px; margin: 4px 2px; }
+QScrollBar::handle:vertical { background: $border; border-radius: 4px; min-height: 32px; }
+QScrollBar::handle:vertical:hover { background: $faint; }
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: transparent; }
+
+#UserBubble { background: $user_bubble; color: #ecfdf5; border-radius: 14px; padding: 10px 14px; }
+#AssistantBubble { background: $surface; border: 1px solid $border; border-radius: 14px; padding: 10px 14px; }
+#NoticeBubble { background: $warn_bg; border: 1px solid $warn_border; border-radius: 14px; padding: 10px 14px; }
+#ErrorBubble { background: $danger_bg; border: 1px solid $danger_border; border-radius: 14px; }
+#ErrorText { color: $danger_text; }
+#AssistantCard { background: $surface; border: 1px solid $border; border-radius: 14px; }
+#Timestamp { color: $faint; font-size: 8.5pt; }
+#TypingBubble {
+    background: $surface; border: 1px solid $border; border-radius: 14px; padding: 10px 14px; color: $muted;
+}
+
+#Banner { border-radius: 8px; padding: 8px 10px; font-weight: 600; }
+#Banner[kind="danger"] { background: $danger_bg; color: $danger_text; border: 1px solid $danger_border; }
+#Banner[kind="warn"] { background: $warn_bg; color: $warn; border: 1px solid $warn_border; }
+
+#Triage { background: $surface_2; border: 1px solid $border; border-radius: 10px; }
+#Triage[kind="high"] { background: $danger_bg; border-color: $danger_border; }
+#Triage[kind="medium"] { background: $warn_bg; border-color: $warn_border; }
+#Triage[kind="low"] { background: $ok_bg; border-color: $ok_border; }
+#TriageBadge { font-size: 8.5pt; font-weight: 700; }
+#Triage[kind="high"] #TriageBadge { color: $danger; }
+#Triage[kind="medium"] #TriageBadge { color: $warn; }
+#Triage[kind="low"] #TriageBadge { color: $ok; }
+#TriageAdvice { font-weight: 600; }
+#Triage[kind="high"] #TriageAdvice { color: $danger_text; }
+
+#Question { color: $accent_hover; }
+#InlineProgress { color: $muted; padding: 2px 0; }
+#SectionTitle { color: $muted; font-size: 8.5pt; font-weight: 700; }
+#Muted { color: $faint; font-size: 9pt; }
+
+#SuggestionsTitle { color: $muted; font-size: 9pt; }
+#Chip { background: $surface; border: 1px solid $border; border-radius: 16px; padding: 7px 14px; text-align: left; }
+#Chip:hover { border-color: $accent; color: $accent_hover; }
+
+#Composer { background: $surface; border-top: 1px solid $border; }
+#InputBox { background: $surface_2; border: 1px solid $border; border-radius: 10px; padding: 6px 8px; font-size: 11pt; }
+#InputBox:focus { border-color: $accent; }
+#Hint, #Counter { color: $faint; font-size: 8.5pt; }
+#Counter[over="true"] { color: $danger; }
+#EmergencyBar { color: $muted; font-size: 9pt; }

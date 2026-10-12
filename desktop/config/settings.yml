@@ -1,0 +1,22 @@
+# Desktop client settings. BOCARE_API_URL in the environment overrides api_url.
+
+api_url: http://127.0.0.1:8000
+connect_timeout_seconds: 5
+# Retrieval, a local model and a possible regeneration can take a couple of minutes.
+request_timeout_seconds: 150
+
+# Mirrors the backend's max_input_length; the counter appears from `counter_from_ratio` of it.
+max_input_length: 2000
+counter_from_ratio: 0.8
+
+# Urgency levels from which a reply is shown as high (red, advice first) or medium (amber) urgency.
+high_urgency_level: 4
+medium_urgency_level: 3
+
+window_min_size: [720, 600]
+window_default_size: [1000, 800]
+logo_height: 44
+bubble_max_width: 720
+bubble_width_ratio: 0.8      # of the chat area's width
+input_max_lines: 6
+progress_refresh_ms: 400

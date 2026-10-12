@@ -1,0 +1,239 @@
+# Maps French and English symptom phrases to English MedlinePlus search terms.
+# MedlinePlus only matches short English keywords, so full sentences or French return nothing.
+# Order matters: emergencies first, because only the first `max_terms` matches are searched.
+# Phrases match on word boundaries with an optional plural "s" ("burn" won't match "heartburn").
+
+max_terms: 3
+terms:
+- term: chest pain
+  phrases:
+  - chest pain
+  - douleur thoracique
+  - douleur à la poitrine
+  - douleur dans la poitrine
+  - mal à la poitrine
+- term: heart attack
+  phrases:
+  - heart attack
+  - crise cardiaque
+  - infarctus
+- term: stroke
+  phrases:
+  - stroke
+  - avc
+- term: suicide
+  phrases:
+  - suicide
+  - suicidal
+  - kill myself
+  - self-harm
+  - me suicider
+  - suicidaire
+  - automutilation
+- term: overdose
+  phrases:
+  - overdose
+  - surdose
+- term: poisoning
+  phrases:
+  - poisoning
+  - poisoned
+  - empoisonnement
+  - intoxication
+- term: seizures
+  phrases:
+  - seizure
+  - convulsion
+  - epilepsy
+  - épilepsie
+- term: breathing problems
+  phrases:
+  - can't breathe
+  - cannot breathe
+  - shortness of breath
+  - short of breath
+  - difficulty breathing
+  - du mal à respirer
+  - n'arrive pas à respirer
+  - ne peut pas respirer
+  - difficulté à respirer
+  - essoufflé
+- term: bleeding
+  phrases:
+  - bleeding
+  - saignement
+  - hémorragie
+- term: headache
+  phrases:
+  - headache
+  - mal de tête
+  - maux de tête
+  - mal à la tête
+  - céphalée
+- term: migraine
+  phrases:
+  - migraine
+- term: fever
+  phrases:
+  - fever
+  - fièvre
+  - température
+- term: sore throat
+  phrases:
+  - sore throat
+  - mal de gorge
+  - mal à la gorge
+  - angine
+- term: cough
+  phrases:
+  - cough
+  - coughing
+  - toux
+  - tousse
+- term: common cold
+  phrases:
+  - common cold
+  - runny nose
+  - rhume
+  - nez qui coule
+- term: flu
+  phrases:
+  - flu
+  - influenza
+  - grippe
+- term: heartburn
+  phrases:
+  - heartburn
+  - acid reflux
+  - brûlures d'estomac
+  - reflux
+- term: abdominal pain
+  phrases:
+  - stomach ache
+  - stomach pain
+  - abdominal pain
+  - belly pain
+  - mal au ventre
+  - douleur abdominale
+  - mal à l'estomac
+- term: nausea and vomiting
+  phrases:
+  - nausea
+  - vomiting
+  - throwing up
+  - nausée
+  - vomissement
+  - vomir
+- term: diarrhea
+  phrases:
+  - diarrhea
+  - diarrhoea
+  - diarrhée
+- term: constipation
+  phrases:
+  - constipation
+  - constipated
+  - constipé
+- term: urinary tract infections
+  phrases:
+  - burning when urinating
+  - pain when peeing
+  - urinary infection
+  - brûlure en urinant
+  - brûlures urinaires
+  - cystite
+  - infection urinaire
+- term: rashes
+  phrases:
+  - rash
+  - hives
+  - éruption
+  - boutons
+  - plaques rouges
+  - urticaire
+- term: burns
+  phrases:
+  - burn
+  - brûlure
+- term: dizziness and vertigo
+  phrases:
+  - dizzy
+  - dizziness
+  - vertigo
+  - vertige
+  - étourdissement
+- term: back pain
+  phrases:
+  - back pain
+  - lower back
+  - mal au dos
+  - lombalgie
+- term: joint pain
+  phrases:
+  - joint pain
+  - douleur articulaire
+  - mal aux articulations
+- term: ear infections
+  phrases:
+  - earache
+  - ear pain
+  - mal à l'oreille
+  - mal aux oreilles
+  - otite
+- term: toothache
+  phrases:
+  - toothache
+  - mal aux dents
+  - mal de dents
+- term: insomnia
+  phrases:
+  - insomnia
+  - can't sleep
+  - insomnie
+  - n'arrive pas à dormir
+- term: anxiety
+  phrases:
+  - anxiety
+  - anxious
+  - panic attack
+  - anxiété
+  - angoisse
+  - crise de panique
+- term: depression
+  phrases:
+  - depression
+  - depressed
+  - dépression
+  - déprimé
+- term: allergy
+  phrases:
+  - allergy
+  - allergic
+  - allergie
+  - allergique
+- term: asthma
+  phrases:
+  - asthma
+  - asthme
+- term: diabetes
+  phrases:
+  - diabetes
+  - diabète
+- term: high blood pressure
+  phrases:
+  - high blood pressure
+  - hypertension
+  - tension élevée
+- term: pregnancy
+  phrases:
+  - pregnant
+  - pregnancy
+  - enceinte
+  - grossesse
+- term: fatigue
+  phrases:
+  - tired
+  - fatigue
+  - exhausted
+  - épuisé
+  - fatigué

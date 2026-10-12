@@ -1,0 +1,4 @@
+# Same line endings for everyone, whatever their OS (avoids noisy Windows/Linux diffs).
+* text=auto eol=lf
+*.png binary
+*.npy binary

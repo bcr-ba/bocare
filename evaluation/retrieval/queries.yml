@@ -1,0 +1,55 @@
+# Retrieval evaluation set: patient messages and the MedlinePlus pages that should be retrieved.
+# A query counts as a hit when ANY of its expected pages is among the top-k retrieved sources.
+#
+# style: direct     = textbook wording ("sore throat")
+#        paraphrase = how patients actually talk ("it hurts to swallow")
+# Expected pages were checked against the MedlinePlus export (2026-10-10).
+
+k: 4  # BoCare sends at most 4 sources to the model
+
+queries:
+  # --- English, direct ---------------------------------------------------------------------
+  - {id: en01, lang: en, style: direct, text: "I have had a sore throat since Monday", expected: [sorethroat]}
+  - {id: en02, lang: en, style: direct, text: "I've had a headache for two days", expected: [headache, migraine]}
+  - {id: en03, lang: en, style: direct, text: "I have chest pain spreading to my left arm", expected: [chestpain, heartattack]}
+  - {id: en04, lang: en, style: direct, text: "I keep coughing at night", expected: [cough]}
+  - {id: en05, lang: en, style: direct, text: "I have had diarrhea since yesterday", expected: [diarrhea]}
+  - {id: en06, lang: en, style: direct, text: "I get heartburn after every meal", expected: [heartburn]}
+
+  # --- English, paraphrase -----------------------------------------------------------------
+  - {id: en07, lang: en, style: paraphrase, text: "My throat is scratchy and it hurts to swallow", expected: [sorethroat]}
+  - {id: en08, lang: en, style: paraphrase, text: "My head is pounding and light hurts my eyes", expected: [headache, migraine]}
+  - {id: en09, lang: en, style: paraphrase, text: "It burns when I pee", expected: [urinarytractinfections]}
+  - {id: en10, lang: en, style: paraphrase, text: "My face is drooping on one side and I can't lift my arm", expected: [stroke]}
+  - {id: en11, lang: en, style: paraphrase, text: "I'm wheezing and my inhaler isn't helping", expected: [asthma, breathingproblems]}
+  - {id: en12, lang: en, style: paraphrase, text: "I can't fall asleep and I wake up at 3am every night", expected: [insomnia]}
+  - {id: en13, lang: en, style: paraphrase, text: "I feel sad all the time and have lost interest in everything", expected: [depression]}
+  - {id: en14, lang: en, style: paraphrase, text: "The room starts spinning when I stand up", expected: [dizzinessandvertigo]}
+  - {id: en15, lang: en, style: paraphrase, text: "I have itchy red bumps all over my skin", expected: [hives, rashes]}
+  - {id: en16, lang: en, style: paraphrase, text: "My eyes are red, itchy and sticky in the morning", expected: [pinkeye]}
+  - {id: en17, lang: en, style: paraphrase, text: "I keep throwing up and can't keep water down", expected: [nauseaandvomiting]}
+  - {id: en18, lang: en, style: paraphrase, text: "My ear hurts and feels blocked", expected: [earinfections]}
+  - {id: en19, lang: en, style: paraphrase, text: "I spilled boiling water on my hand", expected: [burns]}
+  - {id: en20, lang: en, style: paraphrase, text: "I can't catch my breath when I walk up the stairs", expected: [breathingproblems]}
+
+  # --- French, direct ----------------------------------------------------------------------
+  - {id: fr01, lang: fr, style: direct, text: "J'ai mal à la gorge depuis lundi", expected: [sorethroat]}
+  - {id: fr02, lang: fr, style: direct, text: "J'ai mal à la tête depuis deux jours", expected: [headache, migraine]}
+  - {id: fr03, lang: fr, style: direct, text: "J'ai une douleur thoracique qui irradie dans le bras gauche", expected: [chestpain, heartattack]}
+  - {id: fr04, lang: fr, style: direct, text: "J'ai de la fièvre depuis hier soir", expected: [fever]}
+  - {id: fr05, lang: fr, style: direct, text: "J'ai des brûlures d'estomac après les repas", expected: [heartburn]}
+  - {id: fr06, lang: fr, style: direct, text: "Je tousse beaucoup la nuit", expected: [cough]}
+
+  # --- French, paraphrase ------------------------------------------------------------------
+  - {id: fr07, lang: fr, style: paraphrase, text: "J'ai la gorge qui gratte et j'ai du mal à avaler", expected: [sorethroat]}
+  - {id: fr08, lang: fr, style: paraphrase, text: "J'ai la tête qui tourne quand je me lève", expected: [dizzinessandvertigo]}
+  - {id: fr09, lang: fr, style: paraphrase, text: "Ça brûle quand je fais pipi", expected: [urinarytractinfections]}
+  - {id: fr10, lang: fr, style: paraphrase, text: "Je n'arrive pas à dormir la nuit", expected: [insomnia]}
+  - {id: fr11, lang: fr, style: paraphrase, text: "Je me sens triste et sans énergie depuis des semaines", expected: [depression, fatigue]}
+  - {id: fr12, lang: fr, style: paraphrase, text: "J'ai des plaques rouges qui grattent sur tout le corps", expected: [hives, rashes]}
+  - {id: fr13, lang: fr, style: paraphrase, text: "J'ai vomi toute la nuit", expected: [nauseaandvomiting]}
+  - {id: fr14, lang: fr, style: paraphrase, text: "Mon enfant est brûlant et grognon depuis ce matin", expected: [fever]}
+  - {id: fr15, lang: fr, style: paraphrase, text: "J'ai mal en bas du dos quand je me penche", expected: [backpain]}
+  - {id: fr16, lang: fr, style: paraphrase, text: "J'ai les yeux rouges qui collent le matin", expected: [pinkeye]}
+  - {id: fr17, lang: fr, style: paraphrase, text: "Je n'arrive plus à aller à la selle depuis une semaine", expected: [constipation]}
+  - {id: fr18, lang: fr, style: paraphrase, text: "J'ai une rage de dents", expected: [toothdisorders]}

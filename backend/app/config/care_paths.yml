@@ -1,0 +1,55 @@
+# What the user is told to do at each urgency level (1-5), in each language.
+
+specialist_suggested_at_level: 3
+specialist_label:
+  fr: Spécialiste suggéré
+  en: Suggested specialist
+specialists:
+  cardiology:
+    fr: cardiologue
+    en: cardiologist
+  neurology:
+    fr: neurologue
+    en: neurologist
+  gastroenterology:
+    fr: gastro-entérologue
+    en: gastroenterologist
+  dermatology:
+    fr: dermatologue
+    en: dermatologist
+levels:
+  5:
+    fr:
+      advice: Appelez le 15 (SAMU) ou le 112, ou rendez-vous immédiatement aux urgences.
+      timeframe: Immédiatement
+    en:
+      advice: Call your local emergency number (15 or 112 in France) or go to the emergency department now.
+      timeframe: Immediately
+  4:
+    fr:
+      advice: Consultez un médecin dans les prochaines heures.
+      timeframe: Dans les 2 à 6 heures
+    en:
+      advice: See a doctor within the next few hours.
+      timeframe: Within 2-6 hours
+  3:
+    fr:
+      advice: Prenez rendez-vous avec un médecin ou un spécialiste.
+      timeframe: Dans les 24 à 48 heures
+    en:
+      advice: Book an appointment with a doctor or specialist.
+      timeframe: Within 24-48 hours
+  2:
+    fr:
+      advice: Consultez votre médecin traitant.
+      timeframe: Dans les 2 à 7 jours
+    en:
+      advice: Consult your GP.
+      timeframe: Within 2-7 days
+  1:
+    fr:
+      advice: Surveillez l'évolution et consultez en cas d'aggravation.
+      timeframe: Surveillance
+    en:
+      advice: Monitor your symptoms and see a doctor if they get worse.
+      timeframe: Monitor

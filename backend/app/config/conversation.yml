@@ -1,0 +1,57 @@
+# Fixed texts and small-talk handling. Small talk (the whole message is a greeting, a thanks or a bare
+# request for help) gets a fixed reply: no triage, no model call.
+
+small_talk:
+  greeting:
+    pattern: ^(hi|hello|hey|good (morning|afternoon|evening)|bonjour|bonsoir|salut|coucou|allo|yo)( there| bocare|
+      everyone| à tous)?[\s!.?,]*$
+    reply:
+      fr: 'Bonjour ! Décrivez-moi vos symptômes : ce que vous ressentez, depuis quand, et à quelle intensité.'
+      en: 'Hello! Tell me about your symptoms: what you feel, since when, and how strong it is.'
+  help:
+    pattern: ^(can you help( me)?|could you help( me)?|help( me)?( please)?|i need help|aide[sz]?[- ]moi|pouvez-vous
+      m'aider|tu peux m'aider|peux-tu m'aider|j'ai besoin d'aide)( please| s'il (te|vous) pla[iî]t)?[\s!.?,]*$
+    reply:
+      fr: Bien sûr. Décrivez-moi ce que vous ressentez, depuis quand, et si c'est léger, modéré ou intense.
+      en: Of course. Tell me what you feel, since when, and whether it is mild, moderate or severe.
+  thanks:
+    pattern: ^(thanks|thank you|thx|merci|ok|okay|d'accord|super|great)( (a lot|beaucoup|bien|you))?[\s!.?,]*$
+    reply:
+      fr: Avec plaisir. Si vos symptômes changent ou s'aggravent, n'hésitez pas à me réécrire.
+      en: You're welcome. If your symptoms change or get worse, write to me again.
+disclaimer:
+  fr: BoCare donne une orientation préliminaire et ne remplace pas un avis médical. En cas de doute, consultez un
+    professionnel de santé.
+  en: BoCare gives preliminary guidance and does not replace medical advice. If in doubt, see a healthcare professional.
+model_unavailable:
+  fr: Le service de réponse est indisponible pour le moment. Réessayez dans quelques instants.
+  en: The answer service is unavailable right now. Please try again shortly.
+fallback_reply:
+  fr: 'Je ne peux pas vous donner d''explication fiable pour ce message. Suivez la recommandation : {advice}'
+  en: 'I can''t give you a reliable explanation for this message. Please follow the recommendation: {advice}'
+internal_error:
+  fr: Une erreur s'est produite. Veuillez réessayer.
+  en: Something went wrong. Please try again.
+answer_sections:
+  fr:
+    explanations: Explications possibles
+    warning_signs: Signes qui doivent alerter
+    self_care: Conseils
+  en:
+    explanations: Possible explanations
+    warning_signs: Warning signs
+    self_care: Self-care
+
+# Clean-up applied to every generated text before verification (app/pipeline/postprocessor.py).
+output_cleanup:
+  # Sentences in which the model talks about itself are removed whole, so the meaning of what
+  # remains is never reworded.
+  self_reference_phrases:
+    - as an ai
+    - as a language model
+    - i'?m (just )?an ai
+    - en tant qu'ia
+    - en tant que modèle de langage
+    - je suis une ia
+  # Openers such as "Here's my response:" or "Voici ma réponse :" at the start of an answer.
+  preamble_pattern: '^\s*(here''?s|here is|voici)\s+(my|ma)\s+(response|answer|réponse)\s*:?\s*'

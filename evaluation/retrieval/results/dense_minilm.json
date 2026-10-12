@@ -1,0 +1,735 @@
+{
+  "retriever": "dense_minilm",
+  "k": 4,
+  "rows": [
+    {
+      "id": "en01",
+      "lang": "en",
+      "style": "direct",
+      "text": "I have had a sore throat since Monday",
+      "expected": [
+        "sorethroat"
+      ],
+      "retrieved": [
+        "sorethroat",
+        "throatdisorders",
+        "cough",
+        "acutebronchitis"
+      ],
+      "rank": 1,
+      "latency_s": 0.015
+    },
+    {
+      "id": "en02",
+      "lang": "en",
+      "style": "direct",
+      "text": "I've had a headache for two days",
+      "expected": [
+        "headache",
+        "migraine"
+      ],
+      "retrieved": [
+        "migraine",
+        "headache",
+        "polymyalgiarheumatica",
+        "traumaticbraininjury"
+      ],
+      "rank": 1,
+      "latency_s": 0.004
+    },
+    {
+      "id": "en03",
+      "lang": "en",
+      "style": "direct",
+      "text": "I have chest pain spreading to my left arm",
+      "expected": [
+        "chestpain",
+        "heartattack"
+      ],
+      "retrieved": [
+        "chestpain",
+        "heartattack",
+        "neckinjuriesanddisorders",
+        "angina"
+      ],
+      "rank": 1,
+      "latency_s": 0.005
+    },
+    {
+      "id": "en04",
+      "lang": "en",
+      "style": "direct",
+      "text": "I keep coughing at night",
+      "expected": [
+        "cough"
+      ],
+      "retrieved": [
+        "cough",
+        "whoopingcough",
+        "snoring",
+        "choking"
+      ],
+      "rank": 1,
+      "latency_s": 0.005
+    },
+    {
+      "id": "en05",
+      "lang": "en",
+      "style": "direct",
+      "text": "I have had diarrhea since yesterday",
+      "expected": [
+        "diarrhea"
+      ],
+      "retrieved": [
+        "diarrhea",
+        "campylobacterinfections",
+        "cholera",
+        "pancreatitis"
+      ],
+      "rank": 1,
+      "latency_s": 0.005
+    },
+    {
+      "id": "en06",
+      "lang": "en",
+      "style": "direct",
+      "text": "I get heartburn after every meal",
+      "expected": [
+        "heartburn"
+      ],
+      "retrieved": [
+        "heartburn",
+        "howtopreventheartdisease",
+        "heartattack",
+        "helicobacterpyloriinfections"
+      ],
+      "rank": 1,
+      "latency_s": 0.004
+    },
+    {
+      "id": "en07",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "My throat is scratchy and it hurts to swallow",
+      "expected": [
+        "sorethroat"
+      ],
+      "retrieved": [
+        "sorethroat",
+        "mouthdisorders",
+        "choking",
+        "throatdisorders"
+      ],
+      "rank": 1,
+      "latency_s": 0.005
+    },
+    {
+      "id": "en08",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "My head is pounding and light hurts my eyes",
+      "expected": [
+        "headache",
+        "migraine"
+      ],
+      "retrieved": [
+        "eyeinfections",
+        "diabeticeyeproblems",
+        "polymyalgiarheumatica",
+        "overactivebladder"
+      ],
+      "rank": null,
+      "latency_s": 0.005
+    },
+    {
+      "id": "en09",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "It burns when I pee",
+      "expected": [
+        "urinarytractinfections"
+      ],
+      "retrieved": [
+        "urinaryincontinence",
+        "diabetesinsipidus",
+        "prostatecancer",
+        "burns"
+      ],
+      "rank": null,
+      "latency_s": 0.004
+    },
+    {
+      "id": "en10",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "My face is drooping on one side and I can't lift my arm",
+      "expected": [
+        "stroke"
+      ],
+      "retrieved": [
+        "arminjuriesanddisorders",
+        "handinjuriesanddisorders",
+        "elbowinjuriesanddisorders",
+        "headinjuries"
+      ],
+      "rank": null,
+      "latency_s": 0.005
+    },
+    {
+      "id": "en11",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "I'm wheezing and my inhaler isn't helping",
+      "expected": [
+        "asthma",
+        "breathingproblems"
+      ],
+      "retrieved": [
+        "acutebronchitis",
+        "asthma",
+        "cough",
+        "bronchialdisorders"
+      ],
+      "rank": 2,
+      "latency_s": 0.005
+    },
+    {
+      "id": "en12",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "I can't fall asleep and I wake up at 3am every night",
+      "expected": [
+        "insomnia"
+      ],
+      "retrieved": [
+        "healthysleep",
+        "sleepapnea",
+        "howtopreventheartdisease",
+        "sleepdisorders"
+      ],
+      "rank": null,
+      "latency_s": 0.005
+    },
+    {
+      "id": "en13",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "I feel sad all the time and have lost interest in everything",
+      "expected": [
+        "depression"
+      ],
+      "retrieved": [
+        "copingwithdisasters",
+        "seasonalaffectivedisorder",
+        "depression",
+        "howtoimprovementalhealth"
+      ],
+      "rank": 3,
+      "latency_s": 0.006
+    },
+    {
+      "id": "en14",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "The room starts spinning when I stand up",
+      "expected": [
+        "dizzinessandvertigo"
+      ],
+      "retrieved": [
+        "balanceproblems",
+        "snoring",
+        "dizzinessandvertigo",
+        "sleepapnea"
+      ],
+      "rank": 3,
+      "latency_s": 0.004
+    },
+    {
+      "id": "en15",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "I have itchy red bumps all over my skin",
+      "expected": [
+        "hives",
+        "rashes"
+      ],
+      "retrieved": [
+        "psoriasis",
+        "rashes",
+        "psoriaticarthritis",
+        "itching"
+      ],
+      "rank": 2,
+      "latency_s": 0.005
+    },
+    {
+      "id": "en16",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "My eyes are red, itchy and sticky in the morning",
+      "expected": [
+        "pinkeye"
+      ],
+      "retrieved": [
+        "eyeinfections",
+        "pinkeye",
+        "allergy",
+        "overactivebladder"
+      ],
+      "rank": 2,
+      "latency_s": 0.005
+    },
+    {
+      "id": "en17",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "I keep throwing up and can't keep water down",
+      "expected": [
+        "nauseaandvomiting"
+      ],
+      "retrieved": [
+        "dehydration",
+        "diarrhea",
+        "drinkingwater",
+        "waterpollution"
+      ],
+      "rank": null,
+      "latency_s": 0.004
+    },
+    {
+      "id": "en18",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "My ear hurts and feels blocked",
+      "expected": [
+        "earinfections"
+      ],
+      "retrieved": [
+        "eardisorders",
+        "barotrauma",
+        "earinfections",
+        "neckinjuriesanddisorders"
+      ],
+      "rank": 3,
+      "latency_s": 0.005
+    },
+    {
+      "id": "en19",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "I spilled boiling water on my hand",
+      "expected": [
+        "burns"
+      ],
+      "retrieved": [
+        "dehydration",
+        "blooddisorders",
+        "drinkingwater",
+        "acuteflaccidmyelitis"
+      ],
+      "rank": null,
+      "latency_s": 0.004
+    },
+    {
+      "id": "en20",
+      "lang": "en",
+      "style": "paraphrase",
+      "text": "I can't catch my breath when I walk up the stairs",
+      "expected": [
+        "breathingproblems"
+      ],
+      "retrieved": [
+        "shock",
+        "breathingproblems",
+        "pulmonaryhypertension",
+        "badbreath"
+      ],
+      "rank": 2,
+      "latency_s": 0.004
+    },
+    {
+      "id": "fr01",
+      "lang": "fr",
+      "style": "direct",
+      "text": "J'ai mal à la gorge depuis lundi",
+      "expected": [
+        "sorethroat"
+      ],
+      "retrieved": [
+        "sorethroat",
+        "cough",
+        "throatdisorders",
+        "acutebronchitis"
+      ],
+      "rank": 1,
+      "latency_s": 0.004
+    },
+    {
+      "id": "fr02",
+      "lang": "fr",
+      "style": "direct",
+      "text": "J'ai mal à la tête depuis deux jours",
+      "expected": [
+        "headache",
+        "migraine"
+      ],
+      "retrieved": [
+        "migraine",
+        "headache",
+        "polymyalgiarheumatica",
+        "traumaticbraininjury"
+      ],
+      "rank": 1,
+      "latency_s": 0.004
+    },
+    {
+      "id": "fr03",
+      "lang": "fr",
+      "style": "direct",
+      "text": "J'ai une douleur thoracique qui irradie dans le bras gauche",
+      "expected": [
+        "chestpain",
+        "heartattack"
+      ],
+      "retrieved": [
+        "infectiousarthritis",
+        "arminjuriesanddisorders",
+        "thoracicoutletsyndrome",
+        "elbowinjuriesanddisorders"
+      ],
+      "rank": null,
+      "latency_s": 0.006
+    },
+    {
+      "id": "fr04",
+      "lang": "fr",
+      "style": "direct",
+      "text": "J'ai de la fièvre depuis hier soir",
+      "expected": [
+        "fever"
+      ],
+      "retrieved": [
+        "fever",
+        "hiv",
+        "valleyfever",
+        "campylobacterinfections"
+      ],
+      "rank": 1,
+      "latency_s": 0.005
+    },
+    {
+      "id": "fr05",
+      "lang": "fr",
+      "style": "direct",
+      "text": "J'ai des brûlures d'estomac après les repas",
+      "expected": [
+        "heartburn"
+      ],
+      "retrieved": [
+        "pepticulcer",
+        "helicobacterpyloriinfections",
+        "indigestion",
+        "stomachdisorders"
+      ],
+      "rank": null,
+      "latency_s": 0.005
+    },
+    {
+      "id": "fr06",
+      "lang": "fr",
+      "style": "direct",
+      "text": "Je tousse beaucoup la nuit",
+      "expected": [
+        "cough"
+      ],
+      "retrieved": [
+        "asthma",
+        "cough",
+        "snoring",
+        "sleepdisorders"
+      ],
+      "rank": 2,
+      "latency_s": 0.004
+    },
+    {
+      "id": "fr07",
+      "lang": "fr",
+      "style": "paraphrase",
+      "text": "J'ai la gorge qui gratte et j'ai du mal à avaler",
+      "expected": [
+        "sorethroat"
+      ],
+      "retrieved": [
+        "mouthdisorders",
+        "throatdisorders",
+        "sorethroat",
+        "choking"
+      ],
+      "rank": 3,
+      "latency_s": 0.006
+    },
+    {
+      "id": "fr08",
+      "lang": "fr",
+      "style": "paraphrase",
+      "text": "J'ai la tête qui tourne quand je me lève",
+      "expected": [
+        "dizzinessandvertigo"
+      ],
+      "retrieved": [
+        "balanceproblems",
+        "headinjuries",
+        "snoring",
+        "barotrauma"
+      ],
+      "rank": null,
+      "latency_s": 0.005
+    },
+    {
+      "id": "fr09",
+      "lang": "fr",
+      "style": "paraphrase",
+      "text": "Ça brûle quand je fais pipi",
+      "expected": [
+        "urinarytractinfections"
+      ],
+      "retrieved": [
+        "burns",
+        "heartburn",
+        "wildfires",
+        "inhalants"
+      ],
+      "rank": null,
+      "latency_s": 0.005
+    },
+    {
+      "id": "fr10",
+      "lang": "fr",
+      "style": "paraphrase",
+      "text": "Je n'arrive pas à dormir la nuit",
+      "expected": [
+        "insomnia"
+      ],
+      "retrieved": [
+        "sleepapnea",
+        "sleepdisorders",
+        "howtopreventheartdisease",
+        "healthysleep"
+      ],
+      "rank": null,
+      "latency_s": 0.005
+    },
+    {
+      "id": "fr11",
+      "lang": "fr",
+      "style": "paraphrase",
+      "text": "Je me sens triste et sans énergie depuis des semaines",
+      "expected": [
+        "depression",
+        "fatigue"
+      ],
+      "retrieved": [
+        "copingwithdisasters",
+        "seasonalaffectivedisorder",
+        "depression",
+        "stress"
+      ],
+      "rank": 3,
+      "latency_s": 0.004
+    },
+    {
+      "id": "fr12",
+      "lang": "fr",
+      "style": "paraphrase",
+      "text": "J'ai des plaques rouges qui grattent sur tout le corps",
+      "expected": [
+        "hives",
+        "rashes"
+      ],
+      "retrieved": [
+        "scars",
+        "bruises",
+        "birthmarks",
+        "psoriasis"
+      ],
+      "rank": null,
+      "latency_s": 0.006
+    },
+    {
+      "id": "fr13",
+      "lang": "fr",
+      "style": "paraphrase",
+      "text": "J'ai vomi toute la nuit",
+      "expected": [
+        "nauseaandvomiting"
+      ],
+      "retrieved": [
+        "nauseaandvomiting",
+        "indigestion",
+        "gastroenteritis",
+        "pancreatitis"
+      ],
+      "rank": 1,
+      "latency_s": 0.004
+    },
+    {
+      "id": "fr14",
+      "lang": "fr",
+      "style": "paraphrase",
+      "text": "Mon enfant est brûlant et grognon depuis ce matin",
+      "expected": [
+        "fever"
+      ],
+      "retrieved": [
+        "commoninfantandnewbornproblems",
+        "toddlerhealth",
+        "refluxininfants",
+        "burns"
+      ],
+      "rank": null,
+      "latency_s": 0.004
+    },
+    {
+      "id": "fr15",
+      "lang": "fr",
+      "style": "paraphrase",
+      "text": "J'ai mal en bas du dos quand je me penche",
+      "expected": [
+        "backpain"
+      ],
+      "retrieved": [
+        "backinjuries",
+        "backpain",
+        "neckinjuriesanddisorders",
+        "sciatica"
+      ],
+      "rank": 2,
+      "latency_s": 0.004
+    },
+    {
+      "id": "fr16",
+      "lang": "fr",
+      "style": "paraphrase",
+      "text": "J'ai les yeux rouges qui collent le matin",
+      "expected": [
+        "pinkeye"
+      ],
+      "retrieved": [
+        "eyeinfections",
+        "pinkeye",
+        "cataract",
+        "cornealdisorders"
+      ],
+      "rank": 2,
+      "latency_s": 0.004
+    },
+    {
+      "id": "fr17",
+      "lang": "fr",
+      "style": "paraphrase",
+      "text": "Je n'arrive plus à aller à la selle depuis une semaine",
+      "expected": [
+        "constipation"
+      ],
+      "retrieved": [
+        "pancreatitis",
+        "sinusitis",
+        "hivprepandpep",
+        "endocarditis"
+      ],
+      "rank": null,
+      "latency_s": 0.004
+    },
+    {
+      "id": "fr18",
+      "lang": "fr",
+      "style": "paraphrase",
+      "text": "J'ai une rage de dents",
+      "expected": [
+        "toothdisorders"
+      ],
+      "retrieved": [
+        "dentures",
+        "drymouth",
+        "dentalhealth",
+        "toothdisorders"
+      ],
+      "rank": 4,
+      "latency_s": 0.005
+    }
+  ],
+  "summary": {
+    "all": {
+      "n": 38,
+      "hit@1": 0.2894736842105263,
+      "hit@k": 0.631578947368421,
+      "mrr": 0.43201754385964913,
+      "empty": 0.0,
+      "median_latency_s": 0.005
+    },
+    "en": {
+      "n": 20,
+      "hit@1": 0.35,
+      "hit@k": 0.7,
+      "mrr": 0.5,
+      "empty": 0.0,
+      "median_latency_s": 0.005
+    },
+    "direct": {
+      "n": 12,
+      "hit@1": 0.75,
+      "hit@k": 0.8333333333333334,
+      "mrr": 0.7916666666666666,
+      "empty": 0.0,
+      "median_latency_s": 0.005
+    },
+    "en/direct": {
+      "n": 6,
+      "hit@1": 1.0,
+      "hit@k": 1.0,
+      "mrr": 1.0,
+      "empty": 0.0,
+      "median_latency_s": 0.005
+    },
+    "paraphrase": {
+      "n": 26,
+      "hit@1": 0.07692307692307693,
+      "hit@k": 0.5384615384615384,
+      "mrr": 0.266025641025641,
+      "empty": 0.0,
+      "median_latency_s": 0.005
+    },
+    "en/paraphrase": {
+      "n": 14,
+      "hit@1": 0.07142857142857142,
+      "hit@k": 0.5714285714285714,
+      "mrr": 0.2857142857142857,
+      "empty": 0.0,
+      "median_latency_s": 0.005
+    },
+    "fr": {
+      "n": 18,
+      "hit@1": 0.2222222222222222,
+      "hit@k": 0.5555555555555556,
+      "mrr": 0.3564814814814815,
+      "empty": 0.0,
+      "median_latency_s": 0.0045000000000000005
+    },
+    "fr/direct": {
+      "n": 6,
+      "hit@1": 0.5,
+      "hit@k": 0.6666666666666666,
+      "mrr": 0.5833333333333334,
+      "empty": 0.0,
+      "median_latency_s": 0.0045000000000000005
+    },
+    "fr/paraphrase": {
+      "n": 12,
+      "hit@1": 0.08333333333333333,
+      "hit@k": 0.5,
+      "mrr": 0.24305555555555555,
+      "empty": 0.0,
+      "median_latency_s": 0.0045000000000000005
+    }
+  }
+}

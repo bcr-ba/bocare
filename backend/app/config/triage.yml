@@ -1,0 +1,88 @@
+# Rule-based triage. The urgency level shown to the user comes from these rules, never from the model.
+# Matching is case-insensitive substring matching on the user's message.
+
+emergency_level: 5
+# Triage results from this level up are logged (level and matched symptoms only, never the message).
+log_from_level: 4
+red_flags:
+- chest pain
+- crushing pain
+- can't breathe
+- cannot breathe
+- unconscious
+- severe bleeding
+- stroke
+- heart attack
+- seizure
+- overdose
+- poisoning
+- paralysis
+- suicide
+- kill myself
+- self-harm
+- douleur thoracique
+- ne peut pas respirer
+- je n'arrive pas à respirer
+- inconscient
+- perte de conscience
+- saignement abondant
+- saignement sévère
+- avc
+- crise cardiaque
+- convulsions
+- surdose
+- empoisonnement
+- paralysie
+- me suicider
+- automutilation
+symptom_profiles:
+- name: chest_pain
+  indicators:
+  - crushing pain
+  - radiating pain
+  - douleur oppressante
+  urgency: 5
+  specialist: cardiology
+- name: headache
+  indicators:
+  - sudden severe
+  - worst headache
+  - céphalée brutale
+  urgency: 3
+  specialist: neurology
+- name: fever
+  indicators:
+  - high fever
+  - persistent fever
+  - fièvre persistante
+  urgency: 2
+  specialist: null
+- name: abdominal_pain
+  indicators:
+  - vomiting blood
+  - vomit du sang
+  - severe abdominal
+  urgency: 3
+  specialist: gastroenterology
+- name: skin_rash
+  indicators:
+  - rapid spreading
+  - rash spreading
+  - éruption qui s'étend
+  urgency: 2
+  specialist: dermatology
+urgency_keywords:
+  severe pain: 4
+  high fever: 4
+  persistent vomiting: 4
+  douleur sévère: 4
+  fièvre élevée: 4
+  vomissements persistants: 4
+  persistent: 3
+  worsening: 3
+  spreading: 3
+  persistant: 3
+  s'aggrave: 3
+  se propage: 3
+  slight: 2
+  faible: 2

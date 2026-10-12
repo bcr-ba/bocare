@@ -1,0 +1,35 @@
+# Questions asked to gather more detail: the first unasked question of each category, up to
+# `max_per_turn`, until the conversation reaches `ask_until_message` messages.
+# Each category must have the same number of questions in every language.
+
+ask_until_message: 6
+max_per_turn: 3
+categories:
+  pain:
+    fr:
+    - Sur une échelle de 1 à 10, comment évalueriez-vous votre douleur ?
+    - La douleur est-elle constante ou intermittente ?
+    en:
+    - On a scale of 1 to 10, how would you rate your pain?
+    - Is the pain constant or does it come and go?
+  duration:
+    fr:
+    - Depuis quand ressentez-vous ces symptômes ?
+    - Les symptômes sont-ils apparus soudainement ou progressivement ?
+    en:
+    - How long have you had these symptoms?
+    - Did the symptoms start suddenly or gradually?
+  associated:
+    fr:
+    - Avez-vous de la fièvre, des nausées ou des vertiges ?
+    - Votre appétit ou votre sommeil sont-ils affectés ?
+    en:
+    - Do you have a fever, nausea or dizziness?
+    - Has your appetite or sleep been affected?
+  history:
+    fr:
+    - Prenez-vous actuellement des médicaments ?
+    - Avez-vous des antécédents médicaux ou des allergies ?
+    en:
+    - Are you currently taking any medication?
+    - Do you have any medical history or allergies?

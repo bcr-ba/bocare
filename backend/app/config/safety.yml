@@ -1,0 +1,63 @@
+# Checks run on user input before triage. Self-harm and medication requests are flagged and
+# answered with a fixed message; only abuse (too short/long, flooding, injection) is blocked.
+
+min_input_length: 2
+max_input_length: 2000
+injection_patterns:
+- \bignore\b.{0,20}\b(previous|above|system|instructions?)\b
+- \bforget\b.{0,20}\b(everything|previous|above|instructions?)\b
+- \b(override|disable|bypass)\b.{0,20}\b(safety|security|filters?|restrictions?)\b
+- \b(developer|debug|admin)\s+mode\b
+- \bjail\s*break
+- \[(system|admin|root)\]
+- <\|.*?\|>
+- '^\s*(system|assistant)\s*:'
+self_harm_keywords:
+- suicide
+- suicidal
+- kill myself
+- end my life
+- self-harm
+- hurt myself
+- me suicider
+- suicidaire
+- mettre fin à mes jours
+- automutilation
+- me faire du mal
+medication_keywords:
+- prescription
+- prescribe
+- dosage
+- how much should i take
+- what dose
+- which dose
+- how many pills
+- how many tablets
+- ordonnance
+- prescrire
+- posologie
+- combien dois-je prendre
+- quelle dose
+- combien de comprimés
+- combien de cachets
+messages:
+  too_short:
+    fr: Pouvez-vous décrire vos symptômes un peu plus en détail ?
+    en: Could you describe your symptoms in a bit more detail?
+  too_long:
+    fr: Votre message dépasse {max_length} caractères. Pouvez-vous le raccourcir ?
+    en: Your message is over {max_length} characters. Could you shorten it?
+  rate_limited:
+    fr: Trop de messages en peu de temps. Patientez une minute avant de réessayer.
+    en: Too many messages in a short time. Please wait a minute and try again.
+  prompt_injection:
+    fr: Je ne peux répondre qu'à des questions de santé. Pouvez-vous reformuler ?
+    en: I can only help with health questions. Could you rephrase?
+  self_harm:
+    fr: Si vous pensez au suicide ou à vous faire du mal, vous n'êtes pas seul·e. Appelez le 3114 (numéro national
+      de prévention du suicide, 24h/24, gratuit) ou le 15 en cas de danger immédiat.
+    en: If you are thinking about suicide or hurting yourself, you are not alone. In France, call 3114 (free, 24/7).
+      Elsewhere, contact your local crisis line, or call emergency services if you are in immediate danger.
+  medication_request:
+    fr: Je ne peux pas prescrire de médicaments ni donner de posologie. Un médecin ou un pharmacien pourra le faire.
+    en: I can't prescribe medication or recommend doses. A doctor or pharmacist can.

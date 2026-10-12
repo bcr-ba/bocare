@@ -1,0 +1,19 @@
+[project]
+name = "bocare"
+version = "2.0.0"
+description = "Medical guidance assistant: rule-based triage with verified, cited LLM explanations"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests", "desktop/tests"]
+pythonpath = ["backend", "."]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app", "desktop"]

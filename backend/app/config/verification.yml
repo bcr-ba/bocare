@@ -1,0 +1,53 @@
+# Checks a generated answer must pass before the patient sees it (app/pipeline/verifier.py).
+# Entries are regular-expression fragments, matched case-insensitively. A rejected answer is
+# regenerated once; a second rejection shows only the fixed recommendation.
+
+# Advice to wait or stay home: rejected from this urgency level up.
+delay_advice_min_level: 4
+delay_advice:
+  - wait(ing)?
+  - watch and wait
+  - see how (it|things) goes?
+  - monitor (it |your symptoms )?at home
+  - not urgent
+  - attend(ez|re)
+  - surveill(ez|er)( à domicile)?
+  - pas urgent
+
+# A delay phrase is accepted when one of these appears at most `negation_window_words` words
+# before it: "do not wait", "don't wait", "n'attendez pas", "il ne faut pas attendre".
+negations: ['\bnot', "n't", '\bnever', '\bne', "\\bn'", '\bjamais', '\bsans']
+negation_window_words: 2
+
+# A number followed by one of these units is a dose ("400 mg", "2 comprimés"). "39°C" or
+# "3 days" are not.
+dose_units:
+  - mg
+  - mcg
+  - µg
+  - g
+  - ml
+  - cl
+  - comprimés?
+  - gélules?
+  - cachets?
+  - tablets?
+  - pills?
+  - capsules?
+  - gouttes?
+  - drops?
+  - units?
+  - unités?
+  - puffs?
+  - bouffées?
+
+# Asserting a diagnosis. Restating a symptom ("you have a sore throat") is fine and not listed.
+diagnostic_certainty:
+  - you (definitely|certainly|clearly|surely|obviously) have
+  - you are suffering from
+  - (this|it) is (definitely|certainly|clearly|surely) (a|an)\b
+  - (your|the) diagnosis is
+  - vous avez (certainement|sûrement|clairement|forcément)
+  - vous souffrez d
+  - (il s'agit|c'est) (certainement|forcément|sûrement|clairement)
+  - le diagnostic est

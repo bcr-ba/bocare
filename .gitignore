@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.log
+bocare_session_*.json
+.pytest_cache/
+
+# Re-downloadable with: python scripts/build_corpus.py --download
+backend/data/raw/
+# Rebuilt by scripts/build_index.py (binary, model-specific)
+backend/data/index/

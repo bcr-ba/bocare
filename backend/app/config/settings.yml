@@ -1,0 +1,64 @@
+# Runtime settings. Every key can be overridden by an environment variable (or the .env file at the
+# repository root) with the same name in upper case, e.g. OLLAMA_MODEL=qwen3:14b.
+# Secrets such as OPENROUTER_API_KEY belong in .env only, never in this file.
+
+# --- Language model ----------------------------------------------------------------------------
+llm_provider: ollama            # "ollama" (local, default) or "openrouter"
+llm_temperature: 0.2
+llm_max_tokens: 600
+
+# 127.0.0.1, not localhost: on Windows, localhost tries IPv6 first and every request waits ~2 s
+# before falling back to IPv4, where Ollama listens.
+ollama_url: http://127.0.0.1:11434
+ollama_model: qwen3:8b          # fits in 8 GB of VRAM
+ollama_fallback_model: qwen3:4b # used when the main model fails or times out
+ollama_num_ctx: 8192
+ollama_timeout_seconds: 60
+ollama_keep_alive: 30m          # how long the model stays loaded after the last request
+ollama_warm_up_timeout_seconds: 300
+ollama_health_timeout_seconds: 2
+
+openrouter_model: mistralai/mistral-7b-instruct
+openrouter_url: https://openrouter.ai/api/v1/chat/completions
+llm_timeout_seconds: 30
+
+# --- Verification ------------------------------------------------------------------------------
+llm_max_attempts: 2             # first answer + one regeneration, then the fixed recommendation
+judge_enabled: true             # the judge reuses the main model: two models don't fit in 8 GB of VRAM
+judge_min_level: 3
+judge_max_tokens: 200
+
+# --- Retrieval (MedlinePlus web service, max 85 requests/minute per IP) ------------------------
+medlineplus_url: https://wsearch.nlm.nih.gov/ws/query
+medlineplus_database: healthTopics
+retrieval_timeout_seconds: 8
+retrieval_cache_ttl_seconds: 21600
+retrieval_max_snippet_chars: 700
+retrieval_results_per_term: 2
+retrieval_max_sources: 4
+
+# --- Corpus (MedlinePlus health topics, built by scripts/build_corpus.py) --------------------
+medlineplus_export_page: https://medlineplus.gov/xml.html   # lists the dated XML exports
+corpus_raw_file: backend/data/raw/medlineplus_topics.xml     # paths relative to the repository root
+corpus_chunks_file: backend/data/processed/chunks.jsonl
+chunk_target_chars: 800         # body size; fits the token limit of every embedding model we consider
+chunk_max_synonyms: 10          # "also called" names repeated in each chunk's header
+
+# --- Semantic retrieval (index built by scripts/build_index.py) -----------------------------
+retriever: dense                # "dense" (semantic search over the corpus) or "medlineplus_api" (keyword, live API)
+embedding_provider: ollama      # "ollama" or "fastembed" (CPU, ONNX)
+embedding_model: qwen3-embedding:0.6b
+# Modern embedding models embed queries and documents differently; documents get no prefix.
+embedding_query_instruction: "Instruct: Given a patient's message, retrieve medical information relevant to it\nQuery: "
+embedding_batch_size: 32
+embedding_num_ctx: 512           # chunks are under ~300 tokens; a smaller context keeps both models in 8 GB of VRAM
+embedding_timeout_seconds: 120
+index_dir: backend/data/index   # one sub-folder per embedding model
+dense_candidates: 40            # chunks scored before keeping the best chunk per topic
+
+# --- Conversation ------------------------------------------------------------------------------
+default_language: fr            # language of a new session until the user writes in another one
+
+# --- API ---------------------------------------------------------------------------------------
+rate_limit_per_minute: 10
+log_level: INFO

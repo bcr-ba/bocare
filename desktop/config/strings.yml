@@ -1,0 +1,119 @@
+# All text shown by the desktop client, in French and English. Both languages must have the same keys.
+# {placeholders} are filled in by the code.
+
+fr:
+  window_title: BoCare - Assistant d'orientation médicale
+  subtitle: Orientation médicale · triage en 5 niveaux
+  welcome: 'Bonjour, je suis **BoCare**. Décrivez-moi vos symptômes : ce que vous ressentez, depuis quand, et à
+    quelle intensité. Je vous aiderai à savoir quel type de soins chercher.'
+  suggestions_title: Exemples pour commencer
+  suggestions:
+  - J'ai mal à la tête depuis deux jours avec un peu de fièvre
+  - J'ai mal à la gorge depuis lundi
+  - Une éruption sur mon bras s'étend depuis hier
+  new_session: Nouvelle consultation
+  placeholder: Décrivez vos symptômes…
+  hint: Entrée pour envoyer · Maj+Entrée pour aller à la ligne
+  send: Envoyer
+  typing: BoCare analyse votre message
+  emergency_bar: 'Urgence vitale : appelez le 15 (SAMU) ou le 112.'
+  checking: Connexion…
+  connected: Connecté
+  ai_unavailable: IA indisponible
+  offline: Serveur hors ligne
+  level_pill: Niveau {level}/5 · {label}
+  retry: Réessayer
+  server_error: |-
+    Impossible de joindre le serveur BoCare. Vérifiez qu'il est lancé (`uvicorn app.main:app`).
+
+    Détail : {error}
+  you: Vous
+  triage_title: Niveau d'urgence
+  urgency: 'Niveau d''urgence :'
+  urgency_labels:
+    1: faible
+    2: faible
+    3: modéré
+    4: élevé
+    5: urgence
+  recommendation: 'Recommandation :'
+  timeframe: 'Délai :'
+  follow_up: 'Pour mieux vous orienter :'
+  follow_up_title: Pour mieux vous orienter
+  explanations_title: Explications possibles
+  warning_signs_title: Signes qui doivent alerter
+  self_care_title: En attendant
+  stage_retrieving: Recherche de sources médicales
+  stage_generating: Rédaction de l'explication
+  stage_verifying: Vérification de la réponse
+  stage_regenerating: Réponse rejetée par les contrôles, nouvelle rédaction
+  sources: 'Sources :'
+  sources_title: Sources
+  menu_file: Fichier
+  menu_help: Aide
+  export: Exporter la consultation…
+  quit: Quitter
+  about: À propos
+  error: Erreur
+  exported: Consultation exportée vers {path}
+  export_failed: 'Échec de l''export : {error}'
+  about_text: <h3>BoCare</h3><p>Assistant d'orientation médicale (projet personnel, 2025).</p><p>Bocar Thierno Ousmane
+    Ba</p><p>BoCare ne remplace pas un avis médical. En cas d'urgence, appelez le 15 ou le 112.</p>
+en:
+  window_title: BoCare - Medical guidance assistant
+  subtitle: Medical guidance · 5-level triage
+  welcome: 'Hello, I''m **BoCare**. Describe your symptoms: what you feel, since when, and how strong it is. I''ll
+    help you work out what kind of care to seek.'
+  suggestions_title: Try one of these
+  suggestions:
+  - I've had a headache for two days with a slight fever
+  - I've had a sore throat since Monday
+  - A rash on my arm has been spreading since yesterday
+  new_session: New consultation
+  placeholder: Describe your symptoms…
+  hint: Enter to send · Shift+Enter for a new line
+  send: Send
+  typing: BoCare is analysing your message
+  emergency_bar: 'Life-threatening emergency: call 15 (SAMU) or 112.'
+  checking: Connecting…
+  connected: Connected
+  ai_unavailable: AI unavailable
+  offline: Server offline
+  level_pill: Level {level}/5 · {label}
+  retry: Try again
+  server_error: |-
+    Can't reach the BoCare server. Check that it is running (`uvicorn app.main:app`).
+
+    Details: {error}
+  you: You
+  triage_title: Urgency level
+  urgency: 'Urgency level:'
+  urgency_labels:
+    1: low
+    2: low
+    3: moderate
+    4: high
+    5: emergency
+  recommendation: 'Recommendation:'
+  timeframe: 'Timeframe:'
+  follow_up: 'To guide you better:'
+  follow_up_title: To guide you better
+  explanations_title: Possible explanations
+  warning_signs_title: Warning signs
+  self_care_title: Meanwhile
+  stage_retrieving: Looking up medical sources
+  stage_generating: Writing the explanation
+  stage_verifying: Checking the answer
+  stage_regenerating: Answer rejected by the checks, rewriting
+  sources: 'Sources:'
+  sources_title: Sources
+  menu_file: File
+  menu_help: Help
+  export: Export consultation…
+  quit: Quit
+  about: About
+  error: Error
+  exported: Consultation exported to {path}
+  export_failed: 'Export failed: {error}'
+  about_text: <h3>BoCare</h3><p>Medical guidance assistant (personal project, 2025).</p><p>Bocar Thierno Ousmane
+    Ba</p><p>BoCare does not replace medical advice. In an emergency, call your local emergency number.</p>
